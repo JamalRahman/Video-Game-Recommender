@@ -1,13 +1,12 @@
 from flask import Flask
-from ml.models import CNN
+from ml.models import CNN, Model
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
-    model = CNN()
-    model.load()
+    model = CNN('models/1/')
     return 'yeet'
 
 if __name__ == '__main__':

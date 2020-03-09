@@ -2,33 +2,45 @@
 # Augment data with preprocessing
 # Data test/train split
 # Build CNN
+import tensorflow as tf
 
-from abc import ABC, abstractmethod
+class Model():
+    def __init__ (self,path:str=None):
+        self._model = None
+        self._path = path
 
-class Model(ABC):
-
-    @abstractmethod
+        if(self._path != None):
+            self.load()
+    
     def train(self,xs,ys):
+
         pass
     
-    @abstractmethod
     def predict(self, x):
         pass
 
-    def save(self):
-        # model.save
+    def save(self,path):
+
         pass
 
-    @abstractmethod
     def load(self):
-        # model 
         pass
 
-class CNN(Model):
-    def train(self, xs, ys):
-        return super().train(xs, ys)
+class NN(Model):
+
     def predict(self, x):
-        return super().predict(x)
+        pass
+
     def load(self):
-        return super().load()
+        try:
+            self._model = tf.saved_model.load(self._path)
+        except:
+            raise
+        return self
+    pass
+
+class Dummy(Model):
+
+    def predict(self, x):
+        return 1
     pass
