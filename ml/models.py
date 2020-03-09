@@ -3,6 +3,7 @@
 # Data test/train split
 # Build CNN
 import tensorflow as tf
+from sklearn.linear_model import LogisticRegression
 
 class Model():
     def __init__ (self,path:str=None):
@@ -44,3 +45,12 @@ class Dummy(Model):
     def predict(self, x):
         return 1
     pass
+
+class LogReg(Model):
+
+    def train(self, xs, ys):
+        self._model = LogisticRegression()
+        self._model.fit(xs,ys)
+        
+    def predict(self, x):
+        return self._model.predict(x)
