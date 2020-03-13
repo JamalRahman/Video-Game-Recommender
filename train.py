@@ -13,6 +13,6 @@ model = CNN()
 
 # Train model
 
-model.train()
+model.train(xs,ys)
 
 # Save model
