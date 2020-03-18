@@ -1,5 +1,5 @@
 from flask import Flask
-from ml.models import CNN, Model
+from ml.models import NN, Model
 
 app = Flask(__name__)
 
