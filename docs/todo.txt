@@ -1,9 +1,6 @@
 Set up TDD using pytest
 
-Configure docker container
-
-Set up CI / CD
-    Github actions to deploy a docker container to heroku
+Set up github actions to auto-test
 
 make requests to live dummy model
 

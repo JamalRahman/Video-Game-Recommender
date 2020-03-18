@@ -1,11 +1,23 @@
-from flask import Flask
+from flask import Flask, request
+from flask_restful import Api, Resource, reqparse
 from ml.models import NN, Model
 
 app = Flask(__name__)
+api = Api(app)
 
-@app.route('/')
-def index():
-    return 'yeet'
+# Detect if no model exists, set flag
+
+class _ModelCaller(Resource):
+    
+    def get(self):
+        return self.post()
+    
+    def post(self):
+        return {'prediction':1}
+
+
+api.add_resource(_ModelCaller, '/api')
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(debug=True,host='0.0.0.0')
