@@ -1,0 +1,11 @@
+Set up TDD using pytest
+
+Configure docker container
+
+Set up CI / CD
+    Github actions to deploy a docker container to heroku
+
+make requests to live dummy model
+
+Implement cuisine-predictor model
+
