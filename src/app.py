@@ -3,10 +3,8 @@ from ml.models import CNN, Model
 
 app = Flask(__name__)
 
-
 @app.route('/')
 def index():
-    model = CNN('models/1/')
     return 'yeet'
 
 if __name__ == '__main__':
