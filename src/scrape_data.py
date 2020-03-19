@@ -7,6 +7,20 @@ import os
 import requests
 
 
+# #########################
+
+
+# Split into BatchProcessor class
+#     BatchProcessor handles saving and chunking
+
+# Scraper class yields output (info dictionaries for an app)
+
+# batch processor increments its batch loop when scraper yields,
+# batch processor loops over all apps
+
+
+
+
 class GameScraper:
     def __init__(batch_size, ms_per_batch):
         self.batch_size = batch_size
@@ -18,25 +32,25 @@ class GameScraper:
     def scrape(data):
         for app in data:
 
-            if(batches_made>0):
-                break;
-
             appid = str(app['appid'])
-            
+
             # Make store.steampowered api call
             response = requests.post('https://store.steampowered.com/api/appdetails/?appids='+appid)
 
+            # POTENTIAL TYPERROR HERE
             game_info = response.json()[appid]
-            if game_info['success'] == True:
-                is_game = game_info['data']['type']=='game'
-                print(app['name']+' '+str(is_game))
+            if game_info['success'] == False:
+                continue
+            
+            # Get game info
+            # Add game info to batch
+            is_game = game_info['data']['type']=='game'
+            print(app['name']+' '+str(is_game))
 
-                if is_game:
-                    app['is_game'] = int(is_game)
-                    batch.append(app)
-                    current_batch_size = current_batch_size+1
-
-            is_game = scraper.is_game(response)
+            if is_game:
+                app['is_game'] = int(is_game)
+                batch.append(app)
+                current_batch_size = current_batch_size+1
 
             if(self.current_batch_size==self.batch_size-1):
                 # cache batch
