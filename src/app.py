@@ -5,6 +5,7 @@ from ml.models import NN, Model
 app = Flask(__name__)
 api = Api(app)
 
+
 # Detect if no model exists, set flag
 
 class _ModelCaller(Resource):

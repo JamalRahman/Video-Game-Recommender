@@ -4,4 +4,73 @@ Set up github actions to auto-test
 
 make requests to live dummy model
 
-Implement cuisine-predictor model
+Design steam data schema
+    Identify possible features
+
+Download steam data
+
+EDA process
+
+Implement game recommendation model
+
+###############################
+
+$jsonSchema: {
+         bsonType: "object",
+         required: [ "userid", "appid", "played", "playtime","review"],
+         properties: {
+            name: {
+               bsonType: "string",
+               description: "must be a string and is required"
+            },
+            year: {
+               bsonType: "int",
+               minimum: 2017,
+               maximum: 3017,
+               description: "must be an integer in [ 2017, 3017 ] and is required"
+            },
+            major: {
+               enum: [ "Math", "English", "Computer Science", "History", null ],
+               description: "can only be one of the enum values and is required"
+            },
+            gpa: {
+               bsonType: [ "double" ],
+               description: "must be a double if the field exists"
+            },
+            address: {
+               bsonType: "object",
+               required: [ "city" ],
+               properties: {
+                  street: {
+                     bsonType: "string",
+                     description: "must be a string if the field exists"
+                  },
+                  city: {
+                     bsonType: "string",
+                     "description": "must be a string and is required"
+                  }
+               }
+            }
+         }
+      }
+
+$jsonSchema: {
+         bsonType: "object",
+         required: [ "appid", "title", "steam_url", "review_score", "tags"],
+         properties: {
+            appid: {
+               bsonType: "int",
+               description: "must be an int and is required"
+            },
+            review_score: {
+                bsonType: "TBC",
+                description: "TBC"
+            },
+            tags: {
+                bsonType: "array",
+                items:{
+                    bsonType: "string"
+                }
+            }
+         }
+      }
