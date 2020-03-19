@@ -6,68 +6,43 @@ from pathlib import Path
 import os
 import requests
 
-
-# #########################
-
-
-# Split into BatchProcessor class
-#     BatchProcessor handles saving and chunking
-
-# Scraper class yields output (info dictionaries for an app)
-
-# batch processor increments its batch loop when scraper yields,
-# batch processor loops over all apps
-
-
-
-
-class GameScraper:
-    def __init__(batch_size, ms_per_batch):
-        self.batch_size = batch_size
+class BatchProcessor:
+    def __init__(self,target_batch_size = 200, ms_per_batch = 300000):
+        self.target_batch_size = target_batch_size
         self.ms_per_batch = ms_per_batch
+
         self.current_batch_size = 0
         self.batches_made = 0
         self.batch = deque()
+    
+    def process_batches(self,func,data,save_path):
+        batch_starttime = datetime.now()
+        for element in data:
+            # Get response
+            # Parse game from response
+            out = func(element)
 
-    def scrape(data):
-        for app in data:
-
-            appid = str(app['appid'])
-
-            # Make store.steampowered api call
-            response = requests.post('https://store.steampowered.com/api/appdetails/?appids='+appid)
-
-            # POTENTIAL TYPERROR HERE
-            game_info = response.json()[appid]
-            if game_info['success'] == False:
-                continue
+            if out is not None:
+                self.batch.append(out)
+                self.current_batch_size = self.current_batch_size+1
+                print('Appending '+str(out))
+                print('Current in batch '+str(self.current_batch_size))
             
-            # Get game info
-            # Add game info to batch
-            is_game = game_info['data']['type']=='game'
-            print(app['name']+' '+str(is_game))
-
-            if is_game:
-                app['is_game'] = int(is_game)
-                batch.append(app)
-                current_batch_size = current_batch_size+1
-
-            if(self.current_batch_size==self.batch_size-1):
-                # cache batch
-                scraper.save_batch(batch, cache_path)
-
+            if(self.current_batch_size==self.target_batch_size):
+                # save batch
+                self.save_batch(save_path)
+                current_batch_size = 0
                 # wait for time_delta to hit ms_per_batch
                 batch_endtime = datetime.now()
-
                 timedelta = batch_endtime-batch_starttime;
                 time_to_wait = ms_per_batch - (timedelta.microseconds / 1000)
                 print('time to wait: '+str(time_to_wait))
-
                 time.sleep(max(time_to_wait,0)/1000)
 
-    def save_batch(batch, path):
-
-        # Make directories for saving batches
+        if self.current_batch_size < target_batch_size:
+            self.save_batch(save_path)
+        
+    def save_batch(self,save_path):
         abs_path = (os.path.abspath(path))
         Path(abs_path).mkdir(parents=True,exist_ok=True)
         
@@ -80,11 +55,30 @@ class GameScraper:
         
         self.current_batch_size = 0
         self.batch_number = batch_number+1
+        
+class SteamScraper:
 
-    def is_game(appid,batch):
-        pass
+    def scrape(self,data):
+        appid = str(data['appid'])
 
+        # Make store.steampowered api call
+        response = requests.post('https://store.steampowered.com/api/appdetails/?appids='+appid)
 
+        # POTENTIAL TYPERROR HERE
+        game_data = response.json()[appid]
+        if game_data['success'] == True:
+            # Get game info
+            # Add game info to batch
+            is_game = game_data['data']['type']=='game'
+            if is_game:
+                return self.extract_features(data,game_data)
+        return None
+
+            
+    def extract_features(self,data,game_data):
+        data['is_game'] = (game_data['data']['type']=='game')
+
+        return data
 
 
 
@@ -94,14 +88,11 @@ if __name__ == '__main__':
     data = json.load(f, encoding='utf-8')
     f.close()
 
-    batch_starttime = datetime.now()
-    formatted_datetime = batch_starttime.strftime("%Y-%m-%d_%H-%M-%S")
+    datetime = datetime.now()
+    formatted_datetime = datetime.strftime("%Y-%m-%d_%H-%M-%S")
 
     cache_path = 'data/cache/{}/'.format(formatted_datetime)
-    
-    scraper = GameScraper()
-    scraper.scrape(data['applist']['apps'])
-        
+    scraper = SteamScraper()
+    batch_processor = BatchProcessor()
 
-            # Assume we tried going too fast, so pause for 5 minutes and retry last.
-        
+    batch_processor.process_batches(scraper.scrape,data['applist']['apps'],cache_path)
