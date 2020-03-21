@@ -52,7 +52,7 @@ class CachingProcessor:
                 print('time to wait: '+str(time_to_wait))
                 time.sleep(max(time_to_wait,0)/1000)
                 self.current_requests=0
-                self.batch_starttime = datetime.now()
+                batch_starttime = datetime.now()
 
             try:
                 self.current_requests = self.current_requests+1
@@ -148,5 +148,5 @@ if __name__ == '__main__':
     cache_path = '../data/cache/{}/'.format(formatted_datetime)
     scraper = SteamScraper()
     batch_processor = CachingProcessor(200)
-
+    time.sleep(600)
     batch_processor.cache_process(scraper.scrape,data['applist']['apps'],cache_path)
