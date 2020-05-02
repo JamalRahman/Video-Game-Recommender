@@ -7,7 +7,7 @@ import os
 import requests
 
 
-def attempt_func(func,element,iter=0,timeout=300000):
+def attempt_func(func,element,iter=0,timeout=300):
     try:
         return func(element)
     except TypeError:
@@ -21,10 +21,10 @@ def attempt_func(func,element,iter=0,timeout=300000):
 
 
 class CachingBatchProcessor:
-    def __init__(self,target_batch_size = 200, ms_per_req_batch = 300000):
+    def __init__(self,target_batch_size = 200, ms_per_req_batch = 300):
         self.target_cache_size = 1000
 
-        self.target_batch_size = 200
+        self.target_batch_size = target_batch_size
         self.ms_per_req_batch = ms_per_req_batch
         self.current_requests = 0
 
@@ -46,8 +46,8 @@ class CachingBatchProcessor:
                 batch_endtime = datetime.now()
                 timedelta = batch_endtime-batch_starttime;
                 time_to_wait = self.ms_per_req_batch - (timedelta.total_seconds())
-                print('time to wait: '+str(time_to_wait)+ 's)
-                time.sleep(max(time_to_wait,0)/1000)
+                print('time to wait: '+str(time_to_wait))
+                time.sleep(max(time_to_wait,0))
                 self.current_requests=0
                 batch_starttime = datetime.now()
 
@@ -69,7 +69,7 @@ class CachingBatchProcessor:
                 self.cache.append(out)
                 self.current_cache_size = self.current_cache_size+1
                 print('Appending '+str(out))
-                print('Number in batch '+str(self.current_cache_size))
+                print('Number in cache '+str(self.current_cache_size))
             
             if(self.current_cache_size==self.target_cache_size):
                 # save cache
@@ -94,37 +94,36 @@ class CachingBatchProcessor:
         
         self.current_cache_size = 0
         self.cache_number = self.cache_number+1
+        self.cache = deque()
 
 
         
 class SteamScraper:
+
+    def __init__(self):
+        self.features = ['is_free','developers','supported_languages','platforms','genres','categories','recommendations','price_overview','release_date']
 
     def scrape(self,data):
         appid = str(data['appid'])
 
         # Make store.steampowered api call
         response = requests.post('https://store.steampowered.com/api/appdetails/?appids='+appid)
-
-        # POTENTIAL TYPERROR HERE
         game_data = response.json()[appid]
+
         if game_data['success'] == True:
-            # Get game info
-            # Add game info to batch
             is_game = game_data['data']['type']=='game'
             if is_game:
-                return self._extract_features(data,game_data)
+                return self._extract_features(self.features,data,game_data)
+
         return None
 
-    def _extract_features(self,data,game_data):
-        data['is_free'] = self._get_key(game_data['data'],'is_free')
-        data['developers'] = self._get_key(game_data['data'],'developers')
-        data['languages'] = self._get_key(game_data['data'],'supported_languages')
-        data['platforms'] = self._get_key(game_data['data'],'platforms')
-        data['genres'] = self._get_key(game_data['data'],'genres')
-        data['categories'] =self._get_key(game_data['data'],'categories')
+    def _extract_features(self,features,data,game_data):
+        extracted = {}
+        for feature in features:
+            data[feature] = self._get_value(game_data['data'],feature)
         return data
 
-    def _get_key(self,json,key):
+    def _get_value(self,json,key):
         try:
             return json[key]
         except:
@@ -144,5 +143,5 @@ if __name__ == '__main__':
 
     cache_path = '../data/cache/{}/'.format(formatted_datetime)
     scraper = SteamScraper()
-    caching_processor = CachingBatchProcessor(200)
+    caching_processor = CachingBatchProcessor()
     caching_processor.cache_process(scraper.scrape,data['applist']['apps'],cache_path)

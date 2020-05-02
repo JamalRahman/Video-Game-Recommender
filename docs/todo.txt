@@ -1,6 +1,19 @@
+Split cache and batch?
+
+docstring
+
+Scraping picking up from a checkpoint
+
 Set up TDD using pytest
 
 Set up github actions to auto-test
+
+Download user data:
+   User ID
+   map of game IDs with associated properties:
+      play time
+      review
+      achievement completion
 
 make requests to live dummy model
 
