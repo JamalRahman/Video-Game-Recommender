@@ -20,7 +20,7 @@ def attempt_func(func,element,iter=0,timeout=300000):
     attempt_func(func,element,iter+1)
 
 
-class CachingProcessor:
+class CachingBatchProcessor:
     def __init__(self,target_batch_size = 200, ms_per_req_batch = 300000):
         self.target_cache_size = 1000
 
@@ -38,18 +38,15 @@ class CachingProcessor:
     def cache_process(self,func,data,save_path):
         batch_starttime = datetime.now()
         for element in data:
-            # Get response
-            # Parse game from response
 
-
+            # If we've hit the full batch, wait to start a new batch
             if(self.current_requests==self.target_batch_size):
                 # wait for time_delta to hit ms_per_batch
 
                 batch_endtime = datetime.now()
                 timedelta = batch_endtime-batch_starttime;
-                time_to_wait = self.ms_per_req_batch - (timedelta.total_seconds() * 1000)
-
-                print('time to wait: '+str(time_to_wait))
+                time_to_wait = self.ms_per_req_batch - (timedelta.total_seconds())
+                print('time to wait: '+str(time_to_wait)+ 's)
                 time.sleep(max(time_to_wait,0)/1000)
                 self.current_requests=0
                 batch_starttime = datetime.now()
@@ -59,7 +56,7 @@ class CachingProcessor:
                 print('current reqs: '+str(self.current_requests))
                 out = func(element)
                 # self.error_flag = False
-            except TypeError:
+            except:
                 # func(element) returned null more than n times, assume that element truly returns null, skip it
                 # if self.error_flag:
                     # raise
@@ -75,7 +72,7 @@ class CachingProcessor:
                 print('Number in batch '+str(self.current_cache_size))
             
             if(self.current_cache_size==self.target_cache_size):
-                # save batch
+                # save cache
                 
                 self.save_cache(save_path)
 
@@ -147,6 +144,5 @@ if __name__ == '__main__':
 
     cache_path = '../data/cache/{}/'.format(formatted_datetime)
     scraper = SteamScraper()
-    batch_processor = CachingProcessor(200)
-    time.sleep(600)
-    batch_processor.cache_process(scraper.scrape,data['applist']['apps'],cache_path)
+    caching_processor = CachingBatchProcessor(200)
+    caching_processor.cache_process(scraper.scrape,data['applist']['apps'],cache_path)
