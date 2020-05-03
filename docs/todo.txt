@@ -1,4 +1,4 @@
-Split cache and batch?
+Write code for original game list acquisition
 
 docstring
 
