@@ -2,7 +2,7 @@ from ml.models import Dummy, LogReg, NN
 import numpy as np
 import json
 import codecs
-
+import steamspypi
 
 # model = LogReg()
 # xs = list(range(10,30))
@@ -14,7 +14,8 @@ import codecs
 
 # print(out)
 
-with codecs .open('data/applist.json','r','utf-8') as f:
-    data = json.load(f, encoding='utf-8')
-    print(len(data['applist']['apps']))
-print('done')
+data_request = dict()
+data_request['request'] = 'all'
+
+data = steamspypi.download(data_request)
+len(data)

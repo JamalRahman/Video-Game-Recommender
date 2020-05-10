@@ -1,0 +1,48 @@
+{
+    'appid': 21130, 
+    'name': 'LEGO® Harry Potter: Years 1-4', 
+    'is_free': False, 
+    'developers': ['TT Games'], 
+    'supported_languages': 'English, French, German, Italian, Spanish - Spain', 
+    'platforms': {'windows': True, 'mac': False, 'linux': False}, 
+    'genres': [{'id': '1', 'description': 'Action'}, 
+    {'id': '25', 'description': 'Adventure'}], 
+    'categories': [{'id': 2, 'description': 'Single-player'}, {'id': 1, 'description': 'Multi-player'}, {'id': 24, 'description': 'Shared/Split Screen'}, {'id': 28, 'description': 'Full controller support'}, {'id': 41, 'description': 'Remote Play on Phone'}, {'id': 42, 'description': 'Remote Play on Tablet'}, {'id': 43, 'description': 'Remote Play on TV'}, {'id': 44, 'description': 'Remote Play Together'}], 
+    'recommendations': {'total': 2274}, 
+    'price_overview': {'currency': 'GBP', 'initial': 999, 'final': 999, 'discount_percent': 0, 'initial_formatted': '', 'final_formatted': '£9.99'},
+    'release_date': {'coming_soon': False, 'date': '25 Jun, 2010'}}
+
+
+
+{
+    "appid":21130,
+    "name":"LEGO Harry Potter: Years 1-4",
+    "developer":"TT Games",
+    "publisher":"Warner Bros. Interactive Entertainment",
+    "score_rank":"",
+    "positive":2697,
+    "negative":575,
+    "userscore":0,
+    "owners":"200,000 .. 500,000",
+    "average_forever":421,
+    "average_2weeks":0,
+    "median_forever":135,
+    "median_2weeks":0,
+    "price":"1999",
+    "initialprice":"1999",
+    "discount":"0",
+    "languages":"English, French, German, Italian, Spanish - Spain",
+    "genre":"Action, Adventure",
+    "ccu":317,
+    "tags":{"LEGO":161,"Adventure":114,"Action":98,"Local Co-Op":95,"Magic":80,"Family Friendly":66,"Singleplayer":52,"Fantasy":51,"Comedy":42,"Multiplayer":38,"Open World":35,"Funny":35,"Split Screen":34,"Puzzle":30,"Co-op":22,"Controller":20,"Third Person":11,"Local Multiplayer":7,"3D Platformer":5}}
+
+
+Take tags
+Replace supported_languages with languages
+Take pos/neg
+take owners
+take average_forever
+take average_2weeks
+take median_forever
+take median_2weeks
+take publisher
