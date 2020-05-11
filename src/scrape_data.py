@@ -22,16 +22,18 @@ class CachingBatchProcessor:
     
 
 
-    def map(self,func,data,save_path):
+    def map(self,save_path, elements, func, **kwargs):
         """ Maps a function across a dataset, caches & saves outputs regularly, while rate limiting function calls
 
         Arguments:
-            func {function(a)} -- The function to batch
-            data {list(a)} -- An list of inputs to be processed by func one at a time
             save_path {string} -- The save location for cached outputs
+            func {function(a)} -- The function to batch
+            **kwargs -- The specified function's arguments
+            
         """
         batch_starttime = datetime.now()
-        for element in data:
+
+        for element in elements:
 
             # If we've hit the full batch, wait to start a new batch
             if(self.current_requests==self.target_batch_size):
@@ -50,8 +52,10 @@ class CachingBatchProcessor:
                 print('current reqs: '+str(self.current_requests))
                 
                 # Attempt the function proper 
-                out = func(element)
-            except:
+                out = func(element,**kwargs)
+
+            except Exception as e:
+                raise
                 # func(element) throws an error, attempt func(element) on the next element
                 print('Continuing to next element')
                 continue
@@ -59,14 +63,14 @@ class CachingBatchProcessor:
             if out is not None:
                 self.cache.append(out)
                 self.current_cache_size = self.current_cache_size+1
-                print('Appending '+str(out))
+                # print('Appending '+str(out))
                 print('Number in cache '+str(self.current_cache_size))
             
             if(self.current_cache_size==self.target_cache_size):
                 self._save_cache(save_path)
 
         # After all elements have been processed, ensure the final cache is saved
-        if self.current_cache_size < target_cache_size:
+        if self.current_cache_size < self.target_cache_size:
             self._save_cache(save_path)
 
     def _save_cache(self,save_path):
@@ -81,7 +85,7 @@ class CachingBatchProcessor:
         # New file save path
         save_path = '{}/cache_{}.txt'.format(abs_path,self.cache_number)
 
-        with open(save_path, 'w') as f:
+        with open(save_path, 'w', encoding='utf-8') as f:
             for item in self.cache:
                 f.write(str(item)+'\n')
         
@@ -106,45 +110,59 @@ class CachingBatchProcessor:
 
 
         
-class SteamGameScraper:
+class SteamClient:
     """This class access the steampowered API to request details about a particular steam game
     """
-    def __init__(self, scrape_properties):
-        self.scrape_properties = scrape_properties
-
-    def scrape(self,data):
-        """Acquires a game's details from the store.steampowered API. Discards non-game titles.
-
-        Arguments:
-            data {dict} -- Dict of appid & game title, previously acquired from a different API
+    def request_game_list(self):
+        """Accesses the Steam API call to return a list of all app IDs and their titles
 
         Returns:
-            dict -- Key-value pair of a game's properties
+            list(dict) -- A list of Steam apps. Each app is represented as a dict with keys 'appid' and 'name'.
+        """
+        response = requests.get('https://api.steampowered.com/ISteamApps/GetAppList/v2/')
+        all_games = response.json()
+        return all_games['applist']['apps']
+
+
+    def request_game_details(self,data, api_url, properties):
+        """Given an app, acquires the app's details from an API. Discards non-game apps by returning None.
+
+        Arguments:
+            data {dict} -- Dict of appid & game title. Steam's API delivers minimal app details via such a dict.
+
+        Returns:
+            dict/None -- Key-value pairs of each game's many properties. Returns None if an app is not a game.
         """
         appid = str(data['appid'])
 
-        # Make store.steampowered api call
-        response = requests.post('https://store.steampowered.com/api/appdetails/?appids='+appid)
+        # Make api call
+        response = requests.post(api_url+appid)
         game_data = response.json()[appid]
 
         if game_data['success'] == True:
             is_game = game_data['data']['type']=='game'
             if is_game:
-                return self._append_properties(data,game_data)
+                return self._append_properties(data,game_data,properties)
 
         return None
 
-    def _append_properties(self,data,game_data):
+    def request_steamspy_details(self, data, api_url, properties):
+        appid = str(data['appid'])
+        response = requests.post(api_url+appid)
+        game_data = response.json()
+        return self._append_properties(data,game_data,properties)
+
+    def _append_properties(self,data,game_data,properties):
         """Appends additional game-details to the existing appid/title dict
 
         Arguments:
-            data {dict} -- Dict of appid & game title, previously acquired from a different API
-            game_data {json} -- Steam API response for the appid of the input data
+            data {dict} -- Dict of appid & game title, previously acquired from the request_game_list() function
+            game_data {dict} -- Steam API response for the appid of the input data
 
         Returns:
             dict -- Dict of an app's appid, game title, and all chosen properties to extract
         """
-        for prop in self.scrape_properties:
+        for prop in properties:
             try:
                 data[prop] = game_data['data'][prop]
             except:
@@ -156,17 +174,44 @@ class SteamGameScraper:
 
 if __name__ == '__main__':
 
-    f = codecs.open('../data/applist.json','r','utf-8')
-    data = json.load(f, encoding='utf-8')
-    f.close()
-
     datetime = datetime.now()
     formatted_datetime = datetime.strftime("%Y-%m-%d_%H-%M-%S")
-
-    cache_path = '../data/cache/{}/'.format(formatted_datetime)
-
-    scrape_features = ['is_free','developers','supported_languages','platforms','genres','categories','recommendations','price_overview','release_date']
+    cache_path = 'data/cache/{}/'.format(formatted_datetime)
     
-    scraper = SteamGameScraper(scrape_features)
-    caching_processor = CachingBatchProcessor()
-    caching_processor.map(scraper.scrape,data['applist']['apps'],cache_path)
+
+    client = SteamClient()
+    processor = CachingBatchProcessor()
+
+    all_games = client.request_game_list()
+
+# Acces the Steam Store API, caching outputs. Approx 39 hr rate-limited runtime
+
+    store_api_url = 'https://store.steampowered.com/api/appdetails/?appids='
+    store_properties = ['is_free','developers','supported_languages','platforms','genres','categories','recommendations','price_overview','release_date']
+
+    # processor.map(
+    #     cache_path,
+    #     all_games,
+    #     client.request_game_details,
+    #     api_url  = store_api_url,
+    #     properties = store_properties)
+
+
+# Access the Steamspy API, caching outputs, approx 7 hr rate-limited runtime
+
+    steamspy_api_url = 'https://steamspy.com/api.php?request=appdetails&appid='
+    steamspy_properties = ['publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','median_2weeks','languages','tags']
+
+    with open('data/cache/2020-05-02_21-41-54/steamstore.json', encoding='utf8') as f:
+        all_games = json.load(f, encoding='utf-8')['apps']
+
+    processr.target_batch_size = 4
+    processor.seconds_per_batch = 1
+    processor.target_cache_size = 10
+
+    processor.map(
+        cache_path,
+        all_games,
+        client.request_steamspy_details,
+        api_url  = steamspy_api_url,
+        properties = steamspy_properties)
