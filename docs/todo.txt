@@ -2,8 +2,6 @@ Caching into json directly rather than txt line by line
 
 Refactor steamspy & steam api into one function?
 
-Steamspy data, append useful info to each app
-
 Word2Vec embedding of genres
 
 Doc2Vec embedding of genres, cluster games accordingly

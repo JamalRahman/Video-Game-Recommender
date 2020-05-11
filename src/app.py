@@ -1,23 +1,20 @@
 from flask import Flask, request
-from flask_restful import Api, Resource, reqparse
-from ml.models import NN, Model
+from flask.views import MethodView
+
+from ml.models import NN, Model, Dummy
 
 app = Flask(__name__)
-api = Api(app)
 
 
 # Detect if no model exists, set flag
 
-class _ModelCaller(Resource):
-    
-    def get(self):
-        return self.post()
-    
-    def post(self):
-        return {'prediction':1}
-
-
-api.add_resource(_ModelCaller, '/api')
+@app.route('/api',methods=['GET','POST'])
+def predict():
+    if 'input' in request.args:
+        model_input = int(request.args['input'])
+        return 2*model_input
+    else:
+        return 'Error: No input given'
 
 
 if __name__ == '__main__':

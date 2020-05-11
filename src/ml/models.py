@@ -43,7 +43,7 @@ class NN(Model):
 class Dummy(Model):
 
     def predict(self, x):
-        return 1
+        return 2*x
     pass
 
 class LogReg(Model):
