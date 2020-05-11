@@ -12,7 +12,7 @@ app = Flask(__name__)
 def predict():
     if 'input' in request.args:
         model_input = int(request.args['input'])
-        return 2*model_input
+        return {"output": str(2*model_input)}
     else:
         return 'Error: No input given'
 

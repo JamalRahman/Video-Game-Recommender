@@ -2,8 +2,8 @@
 # Augment data with preprocessing
 # Data test/train split
 # Build CNN
-import tensorflow as tf
-from sklearn.linear_model import LogisticRegression
+
+
 
 class Model():
     def __init__ (self,path:str=None):
