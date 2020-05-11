@@ -1,4 +1,6 @@
-Combine caches into one json file
+Caching into json directly rather than txt line by line
+
+Refactor steamspy & steam api into one function?
 
 Steamspy data, append useful info to each app
 
