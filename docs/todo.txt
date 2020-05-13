@@ -1,8 +1,17 @@
 Caching into json directly rather than txt line by line
 
-Refactor steamspy & steam api into one function?
+Document Document Document
 
-Word2Vec embedding of genres
+Simple front-end.
+keep it in flask or simple frontend?
+
+Dockerize
+
+Swagger API documentation
+
+
+
+
 
 Doc2Vec embedding of genres, cluster games accordingly
    Select new games that neighbour already-owned/favoured games
