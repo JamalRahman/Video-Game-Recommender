@@ -1,2 +1,3 @@
-data/
+data/dev/
 *.pyc
+*.ipynb_checkpoints/
