@@ -1,4 +1,4 @@
-from ml.models import Dummy, LogReg, NN
+(from ml.models import Dummy, LogReg, NN
 import numpy as np
 import json
 import codecs
@@ -18,4 +18,4 @@ data_request = dict()
 data_request['request'] = 'all'
 
 data = steamspypi.download(data_request)
-len(data)
+len(data))

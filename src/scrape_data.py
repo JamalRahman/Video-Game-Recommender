@@ -93,20 +93,20 @@ class CachingBatchProcessor:
         self.cache_number = self.cache_number+1
         self.cache = deque()
 
-    # def _attempt_func_internal(self,func, element, i, timeout, current_iter):
-    #     try:
-    #         return func(element)
-    #     except TypeError:
-    #         if current_iter==i:
-    #             print('Excessive nulls, raising')
-    #             raise
-    #         else:
-    #             print('Null value, waiting')
-    #             time.sleep(timeout/1000)
-    #     _attempt_func_internal(func,element,i,timeout,current_iter+1)
+    def _attempt_func_internal(self,func, element, i, timeout, current_iter):
+        try:
+            return func(element)
+        except TypeError:
+            if current_iter==i:
+                print('Excessive nulls, raising')
+                raise
+            else:
+                print('Null value, waiting')
+                time.sleep(timeout/1000)
+        _attempt_func_internal(func,element,i,timeout,current_iter+1)
 
-    # def _attempt_func(self,func,element,i=0,timeout=300):
-    #     _attempt_func_internal(func,element,i,timeout,0)
+    def _attempt_func(self,func,element,i=0,timeout=300):
+        _attempt_func_internal(func,element,i,timeout,0)
 
 
         
@@ -123,6 +123,10 @@ class SteamClient:
         all_games = response.json()
         return all_games['applist']['apps']
 
+    def _request_api(self, data, api_url):
+        appid = str(data['appid'])
+        response = requests.post(api_url+appid)
+        return response.json()
 
     def request_game_details(self,data, api_url, properties):
         """Given an app, acquires the app's details from an API. Discards non-game apps by returning None.
@@ -133,23 +137,19 @@ class SteamClient:
         Returns:
             dict/None -- Key-value pairs of each game's many properties. Returns None if an app is not a game.
         """
-        appid = str(data['appid'])
 
-        # Make api call
-        response = requests.post(api_url+appid)
-        game_data = response.json()[appid]
+        game_data = self._request_api(data, api_url)[appid]
 
         if game_data['success'] == True:
             is_game = game_data['data']['type']=='game'
             if is_game:
-                return self._append_properties(data,game_data,properties)
+                return self._append_properties(data,game_data['data'],properties)
 
         return None
 
     def request_steamspy_details(self, data, api_url, properties):
-        appid = str(data['appid'])
-        response = requests.post(api_url+appid)
-        game_data = response.json()
+        game_data = self._request_api(data, api_url)
+
         return self._append_properties(data,game_data,properties)
 
     def _append_properties(self,data,game_data,properties):
@@ -164,7 +164,7 @@ class SteamClient:
         """
         for prop in properties:
             try:
-                data[prop] = game_data['data'][prop]
+                data[prop] = game_data[prop]
             except:
                 data[prop] = None
             
@@ -189,15 +189,15 @@ if __name__ == '__main__':
     store_api_url = 'https://store.steampowered.com/api/appdetails/?appids='
     store_properties = ['is_free','developers','supported_languages','platforms','genres','categories','recommendations','price_overview','release_date']
 
-    # processor.map(
-    #     cache_path,
-    #     all_games,
-    #     client.request_game_details,
-    #     api_url  = store_api_url,
-    #     properties = store_properties)
+    processor.map(
+        cache_path,
+        all_games,
+        client.request_game_details,
+        api_url  = store_api_url,
+        properties = store_properties)
 
 
-# Access the Steamspy API, caching outputs, approx 7 hr rate-limited runtime
+# Access the Steamspy API, caching outputs, approx 2.75 hr rate-limited runtime
 
     steamspy_api_url = 'https://steamspy.com/api.php?request=appdetails&appid='
     steamspy_properties = ['publisher','positive','negative','owners','average_forever','average_2weeks','median_forever','median_2weeks','languages','tags']
@@ -205,9 +205,10 @@ if __name__ == '__main__':
     with open('data/cache/2020-05-02_21-41-54/steamstore.json', encoding='utf8') as f:
         all_games = json.load(f, encoding='utf-8')['apps']
 
-    processr.target_batch_size = 4
-    processor.seconds_per_batch = 1
-    processor.target_cache_size = 10
+
+    processor.target_batch_size = 4
+    processor.seconds_per_batch = 1.1
+    processor.target_cache_size = 1000
 
     processor.map(
         cache_path,
