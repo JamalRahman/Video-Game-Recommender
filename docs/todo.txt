@@ -2,8 +2,8 @@ Caching into json directly rather than txt line by line
 
 Document Document Document
 
-Simple front-end.
-keep it in flask or simple frontend?
+react app frontend
+flask backend, with swagger api
 
 Dockerize
 

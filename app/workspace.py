@@ -1,4 +1,4 @@
-(from ml.models import Dummy, LogReg, NN
+from ml.models import Dummy, LogReg, NN
 import numpy as np
 import json
 import codecs

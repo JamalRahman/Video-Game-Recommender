@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask.views import MethodView
 
 from ml.models import NN, Model, Dummy, EmbeddingsRecommender
@@ -26,6 +26,9 @@ def predict():
     else:
         return 'Error: No input given'
 
+@app.route('/')
+def index():
+    return render_template("index.html")
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
