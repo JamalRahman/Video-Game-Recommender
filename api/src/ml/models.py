@@ -83,10 +83,16 @@ class EmbeddingsRecommender(Model):
         similar_games['appid'] = similar_games['appid'].astype(int)
 
         similar_games = similar_games.merge(self._app_data[['appid','name','positive']], how='left',on='appid')
+        
+        
+        # ADD SCALED POSITIVES TO BASE APP_DATA. A lot of unnecessary scaling at runtime every model-call
+
         similar_games['scaled_positives'] = similar_games['positive']+1
         similar_games['scaled_positives'] = similar_games['scaled_positives'].apply(math.log)
         similar_games['scaled_positives'] = scaler.fit_transform(similar_games['scaled_positives'].values.reshape(-1,1))
+
         similar_games['score'] = similar_games['d2v_similarity']+ 0.28*similar_games['scaled_positives']
+        
         similar_games = similar_games.sort_values(by='score',ascending=False)
         return list(similar_games['name'])[:10]
 

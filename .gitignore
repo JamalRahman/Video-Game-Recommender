@@ -1,4 +1,3 @@
-data/dev/
 *.pyc
 *.ipynb_checkpoints/
 env/
