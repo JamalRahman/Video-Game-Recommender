@@ -24,7 +24,7 @@ with open('../data/processed/app_list.csv') as f:
     title_list = [line.rstrip() for line in f]
 # Detect if no model exists, set flag
 
-@app.route('/api',methods=['GET','POST'])
+@app.route('/api',methods=['GET'])
 def predict():
     if 'input' in request.args:
         model_input = request.args['input']
@@ -35,12 +35,15 @@ def predict():
     else:
         return 'Error: No input given'
 
-@app.route('/search',methods=['GET','POST'])
+@app.route('/search',methods=['GET'])
 def search():
-    query = request.args['query']
-    titles = utils.get_superstrings(query,title_list)
+    if 'query' in request.args:
+        query = request.args['query']
+        titles = utils.get_superstrings(query,title_list)
 
-    return {"titles": titles}
+        return {"titles": titles}
+    else:
+        return 'Error: No input given'
     
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

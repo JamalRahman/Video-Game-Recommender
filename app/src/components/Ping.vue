@@ -1,6 +1,10 @@
 <template>
-  <div>
-    <p>{{ msg }}</p>
+  <div class="container">
+    <button type="button" class="btn btn-primary">{{ msg }}</button>
+
+    <div class="container">
+      <button type="button" class="btn btn-primary">{{ msg }}</button>
+    </div>
   </div>
 </template>
 
@@ -16,7 +20,7 @@ export default {
   },
   methods: {
     getMessage() {
-      const path = 'http://localhost:5000/search?query=bo';
+      const path = 'http://localhost:5000/search?query=borderlands';
       axios.get(path)
         .then((res) => {
           this.msg = res.data;
