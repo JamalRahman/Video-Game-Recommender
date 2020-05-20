@@ -1,0 +1,31 @@
+Caching into json directly rather than txt line by line
+
+Document Document Document
+
+react app frontend
+flask backend, with swagger api
+
+Dockerize
+
+Swagger API documentation
+
+
+
+
+
+Doc2Vec embedding of genres, cluster games accordingly
+   Select new games that neighbour already-owned/favoured games
+
+
+Set up TDD using pytest
+
+Set up github actions to auto-test
+
+Implement game recommendation model
+
+
+https://create-react-app.dev/docs/getting-started/
+
+https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project
+https://developer.okta.com/blog/2018/12/20/crud-app-with-python-flask-react
+https://blog.learningdollars.com/2019/11/29/how-to-serve-a-reactapp-with-a-flask-server/
