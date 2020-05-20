@@ -1,6 +1,5 @@
 from flask import Flask, request
 from flask_cors import CORS
-
 from flask.views import MethodView
 
 from ml.models import NN, Model, Dummy, EmbeddingsRecommender

@@ -1,2 +1,4 @@
 {
+    "python.jediEnabled": false,
+    "python.pythonPath": "env/bin/python"
 }
