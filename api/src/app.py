@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_cors import CORS
 from flask.views import MethodView
 
@@ -22,6 +22,10 @@ model = EmbeddingsRecommender(path_to_model,app_data)
 with open('../data/processed/app_list.csv') as f:
     title_list = [line.rstrip() for line in f]
 # Detect if no model exists, set flag
+
+@app.route('/',methods=['GET'])
+def home():
+    return render_template("index.html")
 
 @app.route('/api',methods=['GET'])
 def predict():
