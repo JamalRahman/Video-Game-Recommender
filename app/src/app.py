@@ -1,11 +1,11 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_cors import CORS
 from flask.views import MethodView
 
 from ml.models import NN, Model, Dummy, EmbeddingsRecommender
 
 import pandas as pd
-import ast, csv
+import ast, csv, json
 import utils
 
 
@@ -19,9 +19,14 @@ app_data = pd.read_csv(training_data_path)
 path_to_model = '../models/doc2vec.pickle'
 model = EmbeddingsRecommender(path_to_model,app_data)
 
-with open('../data/processed/app_list.csv') as f:
-    title_list = [line.rstrip() for line in f]
+with open('../data/processed/app_list.json') as f:
+    app_titles = json.load(f)["data"]
+    title_list = [item["name"] for item in app_titles]
 # Detect if no model exists, set flag
+
+@app.route('/',methods=['GET'])
+def home():
+    return render_template("index.html")
 
 @app.route('/api',methods=['GET'])
 def predict():
@@ -38,9 +43,13 @@ def predict():
 def search():
     if 'query' in request.args:
         query = request.args['query']
-        titles = utils.get_superstrings(query,title_list)
+        titles = utils.get_superstrings(query,title_list)[:10]
+        selected_apps = []
+        for app_details in app_titles:
+            if app_details['name'] in titles:
+                selected_apps.append(app_details);
 
-        return {"titles": titles}
+        return {"apps": selected_apps}
     else:
         return 'Error: No input given'
     
