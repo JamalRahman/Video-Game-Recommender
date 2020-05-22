@@ -81,7 +81,7 @@ function getRecommendation(){
  
   var req = new XMLHttpRequest();
   req.overrideMimeType("application/json");
-  var url = 'http://localhost:5000/api?input='+appids
+  var url = 'https://jr-recommender.herokuapp.com/api?input='+appids
 
   req.open('GET', url, true)
 
@@ -122,7 +122,7 @@ function search(autocompleteList,query){
   
   var req = new XMLHttpRequest();
   req.overrideMimeType("application/json");
-  var url = 'http://localhost:5000/search?query='+query
+  var url = 'https://jr-recommender.herokuapp.com/search?query='+query
   req.open('GET', url, true);
 
   req.onload  = function() {
