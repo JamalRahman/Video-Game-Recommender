@@ -19,7 +19,8 @@
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="stylesheet" href="static/css/normalize.css">
     <link rel="stylesheet" href="static/css/skeleton.css">
-  
+    <link rel="stylesheet" href="static/css/custom.css">
+    <link rel ="stylesheet" href = "static/css/index.css">
     <!-- Favicon
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="icon" type="image/png" href="static/images/favicon.png">
@@ -29,26 +30,69 @@
 
   </head>
   <body>
-    
     <div class='container'>
-      <div class="row">
-        <div class="one-half column" style="margin-top: 25%">
-          <form autocomplete="off">
-            <div class="autocomplete">
-              <div class="searchBarContainer">
-                <input class="patternSearchBar" id="patternSearchInput" placeholder="Search for Games">
-              </div>
-            </div>
-          </form>
+      <section class="header">
+        <h2 class="title">Video Game Recommender</h2>
+        <h5>powered by Steam</h5>
+        
+        <div class="value-props row">
+          <div class="four columns value-prop">
+            1 - Find games on the Steam platform using the search bar below
+          </div>
+          <div class="four columns value-prop">
+            2 - Submit a list of games you enjoyed
+          </div>
+          <div class="four columns value-prop">
+            3 - Recieve recommendations of great games that match your taste
+          </div>
         </div>
+      </section>
+
+      <div class='docs-section' id="main">
+
+        <form autocomplete="off">
+          <label for="exampleMessage">Search for games</label>
+          <div class="searchBarContainer">
+            <input class="u-full-width patternSearchBar" type="text" placeholder="" id="patternSearchInput">
+          </div>
+        </form>
+
+        <div id="tracked-games">
+          
+        </div>
+        
+        <div class='row'>
+          <div class='twelve columns'>
+            <button class='button button-primary' onClick=getRecommendation()>Recommend</button>
+          </div>
+        </div>
+        
       </div>
     </div>
-
   </body>
 </html>
 
 <script>
-var positive_games = {}
+var tracked_games = [];
+var positive_games = [];
+
+function getRecommendation(){
+  appids = positive_games.map(app => app.appid).join()
+ 
+  var req = new XMLHttpRequest();
+  req.overrideMimeType("application/json");
+  var url = 'http://localhost:5000/api?input='+appids
+
+  req.open('GET', url, true)
+
+  req.onload = function() {
+
+    var jsonResponse = JSON.parse(req.responseText);
+    alert(jsonResponse.output)
+  }
+  req.send(null)
+}
+
 
 function autocomplete(inp) {
     /*the autocomplete function takes two arguments,
@@ -61,101 +105,87 @@ function autocomplete(inp) {
     	this.parentNode.setAttribute("class", "searchBarContainer");
     });
     inp.addEventListener("input", function(e) {
-        var a, b, i, val = this.value;
+        var autocompleteList, val = this.value;
         closeAllLists();
         if (!val) { return false;}
         currentFocus = -1;
-        a = document.createElement("DIV");
-        a.setAttribute("id", this.id + "autocomplete-list");
-        a.setAttribute("class", "autocomplete-items");
-        this.parentNode.appendChild(a);
-				search(a,val);
+        autocompleteList = document.createElement("DIV");
+        autocompleteList.setAttribute("id", this.id + "-autocomplete-list");
+        autocompleteList.setAttribute("class", "autocomplete-items");
+        this.parentNode.appendChild(autocompleteList);
+				search(autocompleteList,val);
 
     });
-    /*execute a function presses a key on the keyboard:*/
-    inp.addEventListener("keydown", function(e) {
-        var x = document.getElementById(this.id + "autocomplete-list");
-        if (x) x = x.getElementsByTagName("div");
-        if (e.keyCode == 40) {
-          /*If the arrow DOWN key is pressed,
-          increase the currentFocus variable:*/
-          currentFocus++;
-          /*and and make the current item more visible:*/
-          addActive(x);
-        } else if (e.keyCode == 38) { //up
-          /*If the arrow UP key is pressed,
-          decrease the currentFocus variable:*/
-          currentFocus--;
-          /*and and make the current item more visible:*/
-          addActive(x);
-        } else if (e.keyCode == 13) {
-          /*If the ENTER key is pressed, prevent the form from being submitted,*/
-          e.preventDefault();
-          if (currentFocus > -1) {
-            /*and simulate a click on the "active" item:*/
-            if (x) x[currentFocus].click();
-          }
-        }
-    });
     
-    function search(a,query){
-    	var arr = []
-    	var req = new XMLHttpRequest();
-      req.overrideMimeType("application/json");
-      var url = 'http://localhost:5000/search?query='+query
-      req.open('GET', url, true);
-      req.onload  = function() {
-         var jsonResponse = JSON.parse(req.responseText);
-         console.log(jsonResponse)
-         arr = jsonResponse.apps;
-         
-         for (i = 0; i < arr.length; i++) {
-    
-    				b = document.createElement("DIV");
-            b.innerHTML += "<input type='hidden' value='" + arr[i]["name"] + "'>";
-            b.innerHTML += arr[i]["name"]
-            b.addEventListener("click", function(e) {
-                inp.value = this.getElementsByTagName("input")[0].value;
-                closeAllLists();
-            });
-            a.appendChild(b);
-    
-        }
-      };
-      req.send(null);
-      }
+function search(autocompleteList,query){
+  var search_results = [];
+  
+  var req = new XMLHttpRequest();
+  req.overrideMimeType("application/json");
+  var url = 'http://localhost:5000/search?query='+query
+  req.open('GET', url, true);
+
+  req.onload  = function() {
+      var jsonResponse = JSON.parse(req.responseText);
+      search_results = jsonResponse.apps;
       
-    function addActive(x) {
-      /*a function to classify an item as "active":*/
-      if (!x) return false;
-      /*start by removing the "active" class on all items:*/
-      removeActive(x);
-      if (currentFocus >= x.length) currentFocus = 0;
-      if (currentFocus < 0) currentFocus = (x.length - 1);
-      /*add class "autocomplete-active":*/
-      x[currentFocus].classList.add("autocomplete-active");
+      for (i = 0; i < search_results.length; i++) {
+
+        b = document.createElement("DIV");
+        b.classList.add("search-suggestion");
+        b.innerHTML += search_results[i]["name"];
+
+        tracked_games.push(search_results[i]);
+
+        b.addEventListener("click", function(e) {
+            
+            name = this.innerHTML
+
+            // Add game to positive games list
+            app = getTrackedGame(name)
+
+            // Add divs for tracked games
+            trackGame(app)
+
+            // Clear up search bar
+            inp.value = '';
+            closeAllLists()
+        });
+        autocompleteList.appendChild(b);
     }
-    function removeActive(x) {
-      /*a function to remove the "active" class from all autocomplete items:*/
-      for (var i = 0; i < x.length; i++) {
-        x[i].classList.remove("autocomplete-active");
+  };
+  req.send(null);
+}
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
       }
     }
-    function closeAllLists(elmnt) {
-      /*close all autocomplete lists in the document,
-      except the one passed as an argument:*/
-      var x = document.getElementsByClassName("autocomplete-items");
-      for (var i = 0; i < x.length; i++) {
-        if (elmnt != x[i] && elmnt != inp) {
-          x[i].parentNode.removeChild(x[i]);
-        }
-      }
-    }
-    /*execute a function when someone clicks in the document:*/
-    document.addEventListener("click", function (e) {
-        closeAllLists(e.target);
-    });
   }
+}
+
+function trackGame(app){
+  if(!positive_games.includes(app)){
+    positive_games.push(app)
+    trackedGameDiv = document.createElement("DIV")
+    trackedGameDiv.setAttribute("class", "tracked-games-items");
+    trackedGameDiv.innerHTML = app.name
+    document.getElementById("tracked-games").appendChild(trackedGameDiv)
+  }
+}
+
+function getTrackedGame(name){
+  return tracked_games.find(function(element){
+    return element["name"] == (name)
+  });
+}
+
+
+
   
   autocomplete(document.getElementById("patternSearchInput"));
 </script>
