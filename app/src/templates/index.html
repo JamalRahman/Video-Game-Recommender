@@ -69,7 +69,7 @@ function autocomplete(inp) {
         a.setAttribute("id", this.id + "autocomplete-list");
         a.setAttribute("class", "autocomplete-items");
         this.parentNode.appendChild(a);
-				titles = search(a,val);
+				search(a,val);
 
     });
     /*execute a function presses a key on the keyboard:*/
@@ -102,17 +102,18 @@ function autocomplete(inp) {
     	var arr = []
     	var req = new XMLHttpRequest();
       req.overrideMimeType("application/json");
-      var url = 'https://jr-recommender.herokuapp.com/search?query='+query
+      var url = 'http://localhost:5000/search?query='+query
       req.open('GET', url, true);
       req.onload  = function() {
          var jsonResponse = JSON.parse(req.responseText);
-         arr = jsonResponse.titles;
+         console.log(jsonResponse)
+         arr = jsonResponse.apps;
          
          for (i = 0; i < arr.length; i++) {
     
     				b = document.createElement("DIV");
-            b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
-            b.innerHTML += arr[i]
+            b.innerHTML += "<input type='hidden' value='" + arr[i]["name"] + "'>";
+            b.innerHTML += arr[i]["name"]
             b.addEventListener("click", function(e) {
                 inp.value = this.getElementsByTagName("input")[0].value;
                 closeAllLists();

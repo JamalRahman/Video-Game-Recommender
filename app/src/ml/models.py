@@ -91,7 +91,7 @@ class EmbeddingsRecommender(Model):
         similar_games['scaled_positives'] = similar_games['scaled_positives'].apply(math.log)
         similar_games['scaled_positives'] = scaler.fit_transform(similar_games['scaled_positives'].values.reshape(-1,1))
 
-        similar_games['score'] = similar_games['d2v_similarity']+ 0.28*similar_games['scaled_positives']
+        similar_games['score'] = similar_games['d2v_similarity']+ 0.26*similar_games['scaled_positives']
         
         similar_games = similar_games.sort_values(by='score',ascending=False)
         return list(similar_games['name'])[:10]
