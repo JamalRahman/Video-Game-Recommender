@@ -1,8 +1,10 @@
 Frontend:
    Style Dropdown list
+   Control Dropdown with keeb
    Style 'Tracked Games' list
    Add X button on tracked games
    Add section for recomended games
+   
 
 Backend:
    Doc2Vec on store descriptions, map space

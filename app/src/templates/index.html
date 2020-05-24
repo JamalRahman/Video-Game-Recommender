@@ -24,6 +24,7 @@
     <!-- Favicon
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="icon" type="image/png" href="static/images/favicon.png">
+    <script src="https://kit.fontawesome.com/1b03faddad.js" crossorigin="anonymous"></script>
 
     <!-- JS
     -------------------------------------------------- -->
@@ -58,25 +59,36 @@
         </form>
 
         <div id="tracked-games">
+          <label id='enjoyed-title' for="exampleMessage">Enjoyed Games</label>
           
         </div>
         
-        <div class='row'>
-          <div class='twelve columns'>
-            <button class='button button-primary' onClick=getRecommendation()>Recommend</button>
-          </div>
-        </div>
+
+        <button class='button button-primary' id='recommend' onClick=getRecommendation()>Recommend</button>
         
+        <div id="recommended-games">
+          <label id='enjoyed-title' for="exampleMessage">Recommended Games</label>
+          
+        </div>
       </div>
     </div>
   </body>
 </html>
 
 <script>
-var tracked_games = [];
+var searched_games = [];
 var positive_games = [];
 
+function clearRecommendations(){
+  var paras = document.getElementsByClassName('recommendation-item');
+
+  while(paras[0]){
+    paras[0].parentNode.removeChild(paras[0])
+  }
+}
+
 function getRecommendation(){
+  clearRecommendations()
   appids = positive_games.map(app => app.appid).join()
  
   var req = new XMLHttpRequest();
@@ -88,7 +100,14 @@ function getRecommendation(){
   req.onload = function() {
 
     var jsonResponse = JSON.parse(req.responseText);
-    alert(jsonResponse.output)
+    results = eval(jsonResponse.output)
+
+    results.forEach(function(item){
+      trackedGameDiv = document.createElement("DIV")
+      trackedGameDiv.classList.add("recommendation-item")
+      trackedGameDiv.innerHTML+=item
+      document.getElementById("recommended-games").appendChild(trackedGameDiv)
+    })
   }
   req.send(null)
 }
@@ -135,16 +154,16 @@ function search(autocompleteList,query){
         b.classList.add("search-suggestion");
         b.innerHTML += search_results[i]["name"];
 
-        tracked_games.push(search_results[i]);
+        searched_games.push(search_results[i]);
 
         b.addEventListener("click", function(e) {
             
             name = this.innerHTML
+            console.log(name)
+            // Get appid of the game
+            app = getSearchingGame(name)
 
-            // Add game to positive games list
-            app = getTrackedGame(name)
-
-            // Add divs for tracked games
+            // Add UI for tracked game
             trackGame(app)
 
             // Clear up search bar
@@ -165,21 +184,29 @@ function search(autocompleteList,query){
         x[i].parentNode.removeChild(x[i]);
       }
     }
-  }
+  } 
 }
 
 function trackGame(app){
   if(!positive_games.includes(app)){
-    positive_games.push(app)
+    
+
     trackedGameDiv = document.createElement("DIV")
     trackedGameDiv.setAttribute("class", "tracked-games-items");
-    trackedGameDiv.innerHTML = app.name
+    delbtn = document.createElement("SPAN")
+    delbtn.setAttribute("class","fas fa-times delbtn")
+  
+
+    trackedGameDiv.appendChild(delbtn)
+    trackedGameDiv.innerHTML+=app.name
     document.getElementById("tracked-games").appendChild(trackedGameDiv)
+    positive_games.push(app)
   }
 }
 
-function getTrackedGame(name){
-  return tracked_games.find(function(element){
+function getSearchingGame(name){
+  console.log(searched_games)
+  return searched_games.find(function(element){
     return element["name"] == (name)
   });
 }
