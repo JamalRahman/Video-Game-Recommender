@@ -1,13 +1,38 @@
-Caching into json directly rather than txt line by line
+Frontend:
+   Style Dropdown list
+   Control Dropdown with keeb
+   Style 'Tracked Games' list
+   Add X button on tracked games
+   Add section for recomended games
+   
 
-Document Document Document
+Backend:
+   Doc2Vec on store descriptions, map space
+   TF-IDF on tag frequencies, map space
+   Collaborative-Based filtering on the players
 
-react app frontend
-flask backend, with swagger api
 
-Dockerize
 
-Swagger API documentation
+Productionise TF-IDF
+   Strongly link TF-IDF vectors and app details
+
+Save cosine sim matrix
+   ensure link between matrix and each app
+
+Scrape data for images & store description texts
+
+Average TF-IDF and calculate similar games to hypothetical
+   Is this calculate cosine of every data point, or use some advanced nearest neighbour search
+
+In TSNE, is there a way to label clusters by general genre
+    We don't need ML if we're just clustering by dominant genre
+    More that I'm mapping out the general dominating genres in a region?
+
+
+
+
+
+
 
 
 

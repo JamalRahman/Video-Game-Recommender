@@ -1,4 +1,31 @@
 .autocomplete-items {
     position: absolute;
+    background-color: inherit;
+    width: 100%;
+    box-shadow: 0 0 3px grey;
+}
+
+.title{
+    font-weight: 500;
+}
+.searchBarContainer input{
+    margin-bottom: 0;
+}
+.searchBarContainer{
     background-color: white;
+}
+
+.search-suggestion{
+    padding: 0.5em;
+}
+.search-suggestion:hover{
+    background-color: aliceblue;
+}
+
+#recommend {
+    margin-top: 2em;
+}
+
+.delbtn:hover{
+    color: red;
 }
