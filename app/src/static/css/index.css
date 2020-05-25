@@ -6,7 +6,7 @@
 }
 
 .title{
-    font-weight: 500;
+    font-family: 'Oswald';
 }
 .searchBarContainer input{
     margin-bottom: 0;
@@ -22,10 +22,42 @@
     background-color: aliceblue;
 }
 
-#recommend {
+.button-primary {
     margin-top: 2em;
 }
 
 .delbtn:hover{
     color: red;
+}
+
+html {
+	position: relative;
+	min-height: 100%;
+}   
+
+body{
+    background-color: #fbfbfc;
+    margin-bottom: 2em;
+}
+
+.center{
+    text-align: center;
+}
+
+h6{
+    font-weight: bold;
+}
+.footer{
+    position: absolute;
+    left: 0;
+    bottom: -2.5em;
+    width: 100%;
+    padding-bottom: 0.5em;
+    height:2em;
+    text-align: center;
+}
+.footer a{
+    color: inherit;
+    text-decoration: inherit;
+    
 }
