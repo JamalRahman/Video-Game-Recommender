@@ -177,7 +177,7 @@ function search(autocompleteList,query){
             name = this.innerHTML
             console.log(name)
             // Get appid of the game
-            app = getSearchingGame(name)
+            app = getTrackedGame(name,searched_games)
 
             // Add UI for tracked game
             trackGame(app)
@@ -217,7 +217,7 @@ function trackGame(app){
 
     delbtn.addEventListener("click",function(e){
       name = this.parentNode.getElementsByClassName('tracked-games-name')[0].innerHTML
-      y = getPositiveGame(name)
+      y = getTrackedGame(name,positive_games)
       const index = positive_games.indexOf(y);
       if (index > -1) {
         positive_games.splice(index, 1);
@@ -233,17 +233,10 @@ function trackGame(app){
   }
 }
 
-function getSearchingGame(name){
-  console.log(searched_games)
-  return searched_games.find(function(element){
+function getTrackedGame(name,array){
+  return array.find(function(element){
     return element["name"] == (name)
-  });
-}
-
-function getPositiveGame(name){
-  return positive_games.find(function(element){
-    return element["name"] == (name)
-  });
+  })
 }
 
 
