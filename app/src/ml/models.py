@@ -6,6 +6,11 @@ import gensim.models as g
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import math
+import ast
+import numpy as np
+import pickle
+
+
 scaler = MinMaxScaler()
 
 class Model():
@@ -65,38 +70,28 @@ class TfidfEmbeddingsRecommender(Model):
         if self._model is None:
             print('error handle me')
         self._app_data = app_data
+        apps = app_data[['appid','name','tags']]
+        apps = apps[apps.tags.str.len() != 2]
+        apps['tags'] = apps['tags'].apply(ast.literal_eval)
+        apps['tags'] = apps['tags'].apply(lambda x: {k.lower().replace(' ','_'):v for k,v in x.items()})
+        apps = apps.reset_index().drop('index',axis=1)
+
+        self._app_names = np.array(apps.name)
 
     def predict(self, x):
-
+        
+        for title in x:
+            idx = list(self._app_names).index(title)
+            score_series = pd.Series(self._cosine_sim[idx]).sort_values(ascending = False)
+    
+            recc = []
+            for i in np.array(score_series.index):
+                recc.append(arr[i])
+            print(recc[1:4])
         # Cast x as list
 
-        positives = []
-        negatives = []
-    
-        for pos in x:
-            positives.append(self._model.docvecs[str(pos)])
-        
-        similarity = self._model.docvecs.most_similar(positive=positives, negative=negatives,topn=34071)
-        
-        similar_games = pd.DataFrame(similarity,columns=['appid','d2v_similarity'])
-        similar_games['appid'] = similar_games['appid'].astype(int)
-
-        similar_games = similar_games.merge(self._app_data[['appid','name','positive']], how='left',on='appid')
-        
-        
-        # ADD SCALED POSITIVES TO BASE APP_DATA. A lot of unnecessary scaling at runtime every model-call
-
-        similar_games['scaled_positives'] = similar_games['positive']+1
-        similar_games['scaled_positives'] = similar_games['scaled_positives'].apply(math.log)
-        similar_games['scaled_positives'] = scaler.fit_transform(similar_games['scaled_positives'].values.reshape(-1,1))
-
-        similar_games['score'] = similar_games['d2v_similarity']+ 0.26*similar_games['scaled_positives']
-        
-        similar_games = similar_games.sort_values(by='score',ascending=False)
-        return list(similar_games['name'])[:10]
-
     def load(self):
-        self._model = g.Doc2Vec.load(self._path)
+        self._cosine_sim = g.Doc2Vec.load(self._path)
 
 
 class EmbeddingsRecommender(Model):

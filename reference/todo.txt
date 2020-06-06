@@ -1,6 +1,5 @@
 - Build TFIDF Recommender
-- Frontend 'x'
-- Frontend footer
+
 - TFIDF map
 Save cosine sim matrix
    ensure link between matrix and each app
