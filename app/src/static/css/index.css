@@ -37,7 +37,6 @@ html {
 
 body{
     background-color: #fbfbfc;
-    margin-bottom: 2em;
 }
 
 .center{
@@ -47,15 +46,24 @@ body{
 h6{
     font-weight: bold;
 }
-.footer{
-    position: absolute;
-    left: 0;
-    bottom: -2.5em;
-    width: 100%;
-    padding-bottom: 0.5em;
-    height:2em;
-    text-align: center;
+
+.container {
+    position: relative;
+    min-height: 100vh;
 }
+
+#content-wrap {
+    padding-bottom: 2.5rem;    /* Footer height */
+}
+
+.footer {
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 2.5rem;            /* Footer height */
+    padding: 0.7em 0;
+  }
 .footer a{
     color: inherit;
     text-decoration: inherit;
