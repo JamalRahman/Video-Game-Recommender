@@ -28,6 +28,10 @@ with open('../data/processed/app_list.json') as f:
 def home():
     return render_template("index.html")
 
+@app.route('/map',methods=['GET'])
+def map():
+    return render_template("map.html")
+
 @app.route('/api',methods=['GET'])
 def predict():
     if 'input' in request.args:

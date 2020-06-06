@@ -195,10 +195,11 @@ function trackGame(app){
     trackedGameDiv.setAttribute("class", "tracked-games-items");
     delbtn = document.createElement("SPAN")
     delbtn.setAttribute("class","fas fa-times delbtn")
-  
+    text = document.createElement("SPAN")
+    text.innerHTML = app.name + 'AAA'
 
     trackedGameDiv.appendChild(delbtn)
-    trackedGameDiv.innerHTML+=app.name
+    trackedGameDiv.appendChild(text)
     document.getElementById("tracked-games").appendChild(trackedGameDiv)
     positive_games.push(app)
   }

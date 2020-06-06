@@ -1,23 +1,14 @@
-Frontend:
-   Style Dropdown list
-   Control Dropdown with keeb
-   Style 'Tracked Games' list
-   Add X button on tracked games
-   Add section for recomended games
-   
-
-Backend:
-   Doc2Vec on store descriptions, map space
-   TF-IDF on tag frequencies, map space
-   Collaborative-Based filtering on the players
-
-
+- Build TFIDF Recommender
+- Frontend 'x'
+- Frontend footer
+- TFIDF map
+Save cosine sim matrix
+   ensure link between matrix and each app
 
 Productionise TF-IDF
    Strongly link TF-IDF vectors and app details
+   Model returns similar games to any of the elements, or similar to the inferred mean-vector
 
-Save cosine sim matrix
-   ensure link between matrix and each app
 
 Scrape data for images & store description texts
 
@@ -30,6 +21,17 @@ In TSNE, is there a way to label clusters by general genre
 
 
 
+
+Frontend:
+   Control Dropdown with keeb
+   Style 'Tracked Games' list
+   Add X button on tracked games
+   Add section for recomended games
+   
+
+Backend:
+   Add TFIDF map
+   Collaborative-Based filtering on the players
 
 
 
