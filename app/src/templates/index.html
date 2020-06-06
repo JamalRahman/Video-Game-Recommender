@@ -5,7 +5,7 @@
     <!-- Basic Page Needs
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <meta charset="utf-8">
-    <title>Game Recommender</title>
+    <title>Find A Game</title>
   
     <!-- Mobile Specific Metas
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -14,6 +14,8 @@
     <!-- FONT
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500&display=swap" rel="stylesheet">
+
   
     <!-- CSS
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -33,15 +35,15 @@
   <body>
     <div class='container'>
       <section class="header">
-        <h2 class="title">Video Game Recommender</h2>
-        <h5>powered by Steam</h5>
+        <h2 class="title">Find A Game</h2>
+        <h5>Video game recommendation powered by the Steam platform</h5>
         
         <div class="value-props row">
           <div class="four columns value-prop">
             1 - Find games on the Steam platform using the search bar below
           </div>
           <div class="four columns value-prop">
-            2 - Submit a list of games you enjoyed
+            2 - Submit a list of games you enjoy
           </div>
           <div class="four columns value-prop">
             3 - Recieve recommendations of great games that match your taste
@@ -52,25 +54,36 @@
       <div class='docs-section' id="main">
 
         <form autocomplete="off">
-          <label for="exampleMessage">Search for games</label>
+          <h6>Search for games</h6>
           <div class="searchBarContainer">
             <input class="u-full-width patternSearchBar" type="text" placeholder="" id="patternSearchInput">
           </div>
         </form>
 
         <div id="tracked-games">
-          <label id='enjoyed-title' for="exampleMessage">Enjoyed Games</label>
+          <h6 id='enjoyed-title' for="exampleMessage">Selected games</label>
           
         </div>
         
+        <div class='center'>
+          <button class='button button-primary' id='recommend' onClick=getRecommendation()>Recommend</button>
+        </div>
 
-        <button class='button button-primary' id='recommend' onClick=getRecommendation()>Recommend</button>
-        
         <div id="recommended-games">
-          <label id='enjoyed-title' for="exampleMessage">Recommended Games</label>
+          <h6 id='enjoyed-title' for="exampleMessage">Recommended games</label>
           
         </div>
       </div>
+      
+      <div>
+        Explore the mapped-out video-game genre space and find how your favourite games relate to each other here:
+        <div class='center'>
+          <a class='button button-primary' id='go' href='/map'>Go</a>
+        </div>
+      </div>
+      <section class='footer'>
+        <a href="https://jamalrahman.co.uk">jamalrahman.co.uk</a>
+      </section>
     </div>
   </body>
 </html>
