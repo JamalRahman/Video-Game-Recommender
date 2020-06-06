@@ -209,7 +209,19 @@ function trackGame(app){
     delbtn = document.createElement("SPAN")
     delbtn.setAttribute("class","fas fa-times delbtn")
     text = document.createElement("SPAN")
-    text.innerHTML = app.name + 'AAA'
+    text.setAttribute("class",'tracked-games-name')
+    text.innerHTML = app.name
+
+    delbtn.addEventListener("click",function(e){
+      name = this.parentNode.getElementsByClassName('tracked-games-name')[0].innerHTML
+      y = getPositiveGame(name)
+      const index = positive_games.indexOf(y);
+      if (index > -1) {
+        positive_games.splice(index, 1);
+      }
+      this.parentNode.remove()
+      console.log(positive_games)
+    })
 
     trackedGameDiv.appendChild(delbtn)
     trackedGameDiv.appendChild(text)
@@ -225,6 +237,11 @@ function getSearchingGame(name){
   });
 }
 
+function getPositiveGame(name){
+  return positive_games.find(function(element){
+    return element["name"] == (name)
+  });
+}
 
 
   
