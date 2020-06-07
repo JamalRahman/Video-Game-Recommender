@@ -6,6 +6,11 @@ import gensim.models as g
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import math
+import ast
+import numpy as np
+import pickle
+
+
 scaler = MinMaxScaler()
 
 class Model():
@@ -57,6 +62,36 @@ class LogReg(Model):
         
     def predict(self, x):
         return self._model.predict(x)
+
+
+class TfidfEmbeddingsRecommender(Model):
+    def __init__(self, path=None,app_data=None):
+        super().__init__(path=path)
+        if self._model is None:
+            print('error handle me')
+        self._app_data = app_data
+        apps = app_data[['appid','name','tags']]
+        apps = apps[apps.tags.str.len() != 2]
+        apps['tags'] = apps['tags'].apply(ast.literal_eval)
+        apps['tags'] = apps['tags'].apply(lambda x: {k.lower().replace(' ','_'):v for k,v in x.items()})
+        apps = apps.reset_index().drop('index',axis=1)
+
+        self._app_names = np.array(apps.name)
+
+    def predict(self, x):
+        
+        for title in x:
+            idx = list(self._app_names).index(title)
+            score_series = pd.Series(self._cosine_sim[idx]).sort_values(ascending = False)
+    
+            recc = []
+            for i in np.array(score_series.index):
+                recc.append(arr[i])
+            print(recc[1:4])
+        # Cast x as list
+
+    def load(self):
+        self._cosine_sim = g.Doc2Vec.load(self._path)
 
 
 class EmbeddingsRecommender(Model):

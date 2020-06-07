@@ -1,23 +1,17 @@
-Frontend:
-   Style Dropdown list
-   Control Dropdown with keeb
-   Style 'Tracked Games' list
-   Add X button on tracked games
-   Add section for recomended games
+- Run TSNE map
+   - check multiple levels of perplexity, 10 - 150
+
+- Embed TSNE map in html page
+
+- Productionise TF-IDF
+   Either: Run cosine-sim matrix generation at runtime
+      Just don't serve TFIDF until its ready
+   Or: Use KD-tree NN to avoid heavy cosine-sim matrix generation
    
 
-Backend:
-   Doc2Vec on store descriptions, map space
-   TF-IDF on tag frequencies, map space
-   Collaborative-Based filtering on the players
 
 
 
-Productionise TF-IDF
-   Strongly link TF-IDF vectors and app details
-
-Save cosine sim matrix
-   ensure link between matrix and each app
 
 Scrape data for images & store description texts
 
@@ -30,6 +24,17 @@ In TSNE, is there a way to label clusters by general genre
 
 
 
+
+Frontend:
+   Control Dropdown with keeb
+   Style 'Tracked Games' list
+   Add X button on tracked games
+   Add section for recomended games
+   
+
+Backend:
+   Add TFIDF map
+   Collaborative-Based filtering on the players
 
 
 

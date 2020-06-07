@@ -34,56 +34,59 @@
   </head>
   <body>
     <div class='container'>
-      <section class="header">
-        <h2 class="title">Find A Game</h2>
-        <h5>Video game recommendation powered by the Steam platform</h5>
-        
-        <div class="value-props row">
-          <div class="four columns value-prop">
-            1 - Find games on the Steam platform using the search bar below
-          </div>
-          <div class="four columns value-prop">
-            2 - Submit a list of games you enjoy
-          </div>
-          <div class="four columns value-prop">
-            3 - Recieve recommendations of great games that match your taste
-          </div>
-        </div>
-      </section>
-
-      <div class='docs-section' id="main">
-
-        <form autocomplete="off">
-          <h6>Search for games</h6>
-          <div class="searchBarContainer">
-            <input class="u-full-width patternSearchBar" type="text" placeholder="" id="patternSearchInput">
-          </div>
-        </form>
-
-        <div id="tracked-games">
-          <h6 id='enjoyed-title' for="exampleMessage">Selected games</label>
+      <div id='content-wrap'>
+        <section class="header">
+          <h2 class="title">Find A Game</h2>
+          <h5>Video game recommendation powered by the Steam platform</h5>
           
+          <div class="value-props row">
+            <div class="four columns value-prop">
+              1 - Find games on the Steam platform using the search bar below
+            </div>
+            <div class="four columns value-prop">
+              2 - Submit a list of games you enjoy
+            </div>
+            <div class="four columns value-prop">
+              3 - Recieve recommendations of great games that match your taste
+            </div>
+          </div>
+        </section>
+  
+        <div class='docs-section' id="main">
+  
+          <form autocomplete="off">
+            <h6>Search for games</h6>
+            <div class="searchBarContainer">
+              <input class="u-full-width patternSearchBar" type="text" placeholder="" id="patternSearchInput">
+            </div>
+          </form>
+  
+          <div id="tracked-games">
+            <h6 id='enjoyed-title' for="exampleMessage">Selected games</label>
+            
+          </div>
+          
+          <div class='center'>
+            <button class='button button-primary' id='recommend' onClick=getRecommendation()>Recommend</button>
+          </div>
+  
+          <div id="recommended-games">
+            <h6 id='enjoyed-title' for="exampleMessage">Recommended games</label>
+            
+          </div>
         </div>
         
-        <div class='center'>
-          <button class='button button-primary' id='recommend' onClick=getRecommendation()>Recommend</button>
-        </div>
-
-        <div id="recommended-games">
-          <h6 id='enjoyed-title' for="exampleMessage">Recommended games</label>
-          
+        <div>
+          Explore the mapped-out video-game genre space and find how your favourite games relate to each other here:
+          <div class='center'>
+            <a class='button button-primary' id='go' href='/map'>Go</a>
+          </div>
         </div>
       </div>
-      
-      <div>
-        Explore the mapped-out video-game genre space and find how your favourite games relate to each other here:
-        <div class='center'>
-          <a class='button button-primary' id='go' href='/map'>Go</a>
-        </div>
-      </div>
-      <section class='footer'>
+    
+      <footer class='footer'>
         <a href="https://jamalrahman.co.uk">jamalrahman.co.uk</a>
-      </section>
+      </footer>
     </div>
   </body>
 </html>
@@ -174,7 +177,7 @@ function search(autocompleteList,query){
             name = this.innerHTML
             console.log(name)
             // Get appid of the game
-            app = getSearchingGame(name)
+            app = getTrackedGame(name,searched_games)
 
             // Add UI for tracked game
             trackGame(app)
@@ -208,22 +211,33 @@ function trackGame(app){
     trackedGameDiv.setAttribute("class", "tracked-games-items");
     delbtn = document.createElement("SPAN")
     delbtn.setAttribute("class","fas fa-times delbtn")
-  
+    text = document.createElement("SPAN")
+    text.setAttribute("class",'tracked-games-name')
+    text.innerHTML = app.name
+
+    delbtn.addEventListener("click",function(e){
+      name = this.parentNode.getElementsByClassName('tracked-games-name')[0].innerHTML
+      y = getTrackedGame(name,positive_games)
+      const index = positive_games.indexOf(y);
+      if (index > -1) {
+        positive_games.splice(index, 1);
+      }
+      this.parentNode.remove()
+      console.log(positive_games)
+    })
 
     trackedGameDiv.appendChild(delbtn)
-    trackedGameDiv.innerHTML+=app.name
+    trackedGameDiv.appendChild(text)
     document.getElementById("tracked-games").appendChild(trackedGameDiv)
     positive_games.push(app)
   }
 }
 
-function getSearchingGame(name){
-  console.log(searched_games)
-  return searched_games.find(function(element){
+function getTrackedGame(name,array){
+  return array.find(function(element){
     return element["name"] == (name)
-  });
+  })
 }
-
 
 
   
