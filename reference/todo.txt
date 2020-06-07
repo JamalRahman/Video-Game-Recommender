@@ -1,12 +1,16 @@
-- Build TFIDF Recommender
+- Run TSNE map
+   - check multiple levels of perplexity, 10 - 150
 
-- TFIDF map
-Save cosine sim matrix
-   ensure link between matrix and each app
+- Embed TSNE map in html page
 
-Productionise TF-IDF
-   Strongly link TF-IDF vectors and app details
-   Model returns similar games to any of the elements, or similar to the inferred mean-vector
+- Productionise TF-IDF
+   Either: Run cosine-sim matrix generation at runtime
+      Just don't serve TFIDF until its ready
+   Or: Use KD-tree NN to avoid heavy cosine-sim matrix generation
+   
+
+
+
 
 
 Scrape data for images & store description texts
