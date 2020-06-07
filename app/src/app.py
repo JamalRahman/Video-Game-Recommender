@@ -21,7 +21,6 @@ path_to_cosine_sim = '../models/cosine_sim.pickle'
 
 model = EmbeddingsRecommender(path_to_model,app_data)
 
-model2 = TfidfEmbeddingsRecommender(path_to_cosine_sim,app_data)
 
 with open('../data/processed/app_list.json') as f:
     app_titles = json.load(f)["data"]
@@ -47,16 +46,6 @@ def predict():
     else:
         return 'Error: No input given'
 
-@app.route('/api/v2',methods=['GET'])
-def predict():
-    if 'input' in request.args:
-        model_input = request.args['input']
-        model_input = ast.literal_eval(model_input)
-
-        out = model.predict(model_input)
-        return {"output": str(out)}
-    else:
-        return 'Error: No input given'
 
 
 @app.route('/search',methods=['GET'])
