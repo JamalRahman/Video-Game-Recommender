@@ -1,7 +1,13 @@
-- Run TSNE map
-   - check multiple levels of perplexity, 10 - 150
-
 - Embed TSNE map in html page
+- Embed PCA map in html page
+- Link to large maps
+
+- Write out NB code that generates TFIDF into module.
+- Write out NB code that generates Maps into module
+- Write out code that serves 'mapping' html with embedded maps
+- 
+ WRITE DOC2VEC AND TFIDF GENERATION IN THEIR TRAIN() FUNCS???????????
+
 
 - Productionise TF-IDF
    Either: Run cosine-sim matrix generation at runtime
@@ -24,7 +30,7 @@ In TSNE, is there a way to label clusters by general genre
 
 
 
-
+ 
 Frontend:
    Control Dropdown with keeb
    Style 'Tracked Games' list

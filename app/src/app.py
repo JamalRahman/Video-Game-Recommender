@@ -17,7 +17,6 @@ training_data_path = '../data/processed/app_data.csv'
 app_data = pd.read_csv(training_data_path)
 
 path_to_model = '../models/doc2vec.pickle'
-path_to_cosine_sim = '../models/cosine_sim.pickle'
 
 model = EmbeddingsRecommender(path_to_model,app_data)
 
