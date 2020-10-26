@@ -1,4 +1,5 @@
 {
     "python.jediEnabled": false,
-    "python.pythonPath": "C:\\Python37\\python.exe"
+    "python.pythonPath": "env/bin/python",
+    "python.languageServer": "Microsoft"
 }
