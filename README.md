@@ -6,4 +6,4 @@ This project is a content-based filtering approach to video game recommendation 
 
 The project uses Doc2Vec and TFIDF word embeddings to map each product within the genre space
 
-Visit jr-recommender.herokuapp.com to try it out!
+Visit [jr-recommender.herokuapp.com](https://jr-recommender.herokuapp.com) to try it out!
